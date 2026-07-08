@@ -88,7 +88,7 @@ async function loadDados() {
     lista.innerHTML = "";
 
     if (snapshot.empty) {
-      lista.innerHTML = `<div class="empty-state">Nenhuma renda cadastrada neste mês.</div>`;
+      lista.innerHTML = `<div class="empty-state">💸 Você ainda não cadastrou nenhuma renda ou salário para este mês.</div>`;
     } else {
       snapshot.forEach(docSnap => {
         const r = docSnap.data();

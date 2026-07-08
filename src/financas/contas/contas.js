@@ -145,7 +145,7 @@ async function loadContas() {
     });
 
     if (unified.length === 0) {
-      lista.innerHTML = `<div class="empty-state">Nenhuma conta cadastrada neste mês.</div>`;
+      lista.innerHTML = `<div class="empty-state">✨ Tudo limpo! Não há contas a pagar registradas para este mês.</div>`;
     } else {
       unified.forEach(conta => {
         if (conta.status === "pendente") totalPendente += conta.valor;

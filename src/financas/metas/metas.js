@@ -92,7 +92,7 @@ async function loadMetas() {
     grid.innerHTML = "";
 
     if (snapshot.empty) {
-      grid.innerHTML = `<div class="empty-state">Nenhuma meta ativa. Crie sua primeira meta acima!</div>`;
+      grid.innerHTML = `<div class="empty-state">🎯 Nenhuma meta configurada. Crie o seu primeiro objetivo financeiro aqui em cima!</div>`;
       return;
     }
 

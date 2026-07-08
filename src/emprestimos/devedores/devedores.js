@@ -124,7 +124,7 @@ function loadDevedores() {
     grid.innerHTML = "";
 
     if (snapshot.empty) {
-      grid.innerHTML = `<div class="empty-state">Nenhum devedor cadastrado.</div>`;
+      grid.innerHTML = `<div class="empty-state">🤝 Nenhum empréstimo registrado. Cadastre o primeiro devedor.</div>`;
     } else {
       for (const docSnap of snapshot.docs) {
         const d = docSnap.data();
