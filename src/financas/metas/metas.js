@@ -6,7 +6,7 @@
 import { auth, db } from "../../firebase/firebase-config.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { 
-  collection, query, getDocs, onSnapshot, addDoc, serverTimestamp, doc, updateDoc, deleteDoc, orderBy
+  collection, query, getDocs, onSnapshot, addDoc, serverTimestamp, doc, updateDoc, deleteDoc, orderBy, where, increment
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { injectContextHelp } from "../../onboarding/onboarding.js";
 
