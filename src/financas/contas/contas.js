@@ -14,7 +14,6 @@ const $ = id => document.getElementById(id);
 let currentUser = null;
 let unsubscribeContas = null;
 
-// Meses
 const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 
 function initFiltros() {
@@ -38,22 +37,19 @@ function formatBRL(value) {
   return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
 }
 
-// Global para que os listeners de ações dentro dos botões gerados acessem
+function generateGroupId() {
+  return Math.random().toString(36).substring(2, 10) + Date.now().toString(36);
+}
+
 window.togglePagamento = async function(id, isVirtual, tipoItem, val, statusDesejado) {
   if (isVirtual) {
-    // Virtual fixa => deve criar um doc real como PAGO
     await addDoc(collection(db, `users/${currentUser.uid}/contas`), {
-      nome: tipoItem,
-      valor: val,
-      mes: Number($("filterMes").value),
-      ano: Number($("filterAno").value),
-      status: "pago",
-      isFixa: true,
-      adiantado: false, // se marca como pago normalmente sendo virtal
-      dataCriacao: serverTimestamp()
+      nome: tipoItem, val,
+      mes: Number($("filterMes").value), ano: Number($("filterAno").value),
+      status: "pago", isFixa: true, adiantado: false, dataCriacao: serverTimestamp(),
+      tipoLancamento: "simples", quantidadeParcelas: 1, numeroParcela: 1, grupoParcelamentoId: null
     });
   } else {
-    // Documento real
     await updateDoc(doc(db, `users/${currentUser.uid}/contas`, id), { status: statusDesejado, adiantado: false });
   }
 }
@@ -78,22 +74,14 @@ window.adiantarConta = async function(id, name, valAtual, isVirtual) {
 
   if (isVirtual) {
     await addDoc(collection(db, `users/${currentUser.uid}/contas`), {
-      nome: name,
-      valor: valNum,
-      mes: Number($("filterMes").value),
-      ano: Number($("filterAno").value),
-      status: "pago",
-      isFixa: true,
-      adiantado: true,
-      dataAdiantamento: serverTimestamp(),
-      dataCriacao: serverTimestamp()
+      nome: name, valor: valNum,
+      mes: Number($("filterMes").value), ano: Number($("filterAno").value),
+      status: "pago", isFixa: true, adiantado: true, dataAdiantamento: serverTimestamp(), dataCriacao: serverTimestamp(),
+      tipoLancamento: "simples", quantidadeParcelas: 1, numeroParcela: 1, grupoParcelamentoId: null
     });
   } else {
     await updateDoc(doc(db, `users/${currentUser.uid}/contas`, id), {
-      valor: valNum,
-      status: "pago",
-      adiantado: true,
-      dataAdiantamento: serverTimestamp()
+      valor: valNum, status: "pago", adiantado: true, dataAdiantamento: serverTimestamp()
     });
   }
 }
@@ -128,28 +116,29 @@ async function loadContas() {
     lista.innerHTML = "";
 
     const bdContas = [];
-    const nomesBD = {}; // Set lookup para evitar fixas duplicadas
+    const nomesBD = {}; 
     
     snapshot.forEach(docSnap => {
       const cData = docSnap.data();
       bdContas.push({ id: docSnap.id, ...cData });
-      if (cData.isFixa || fixasAtivas.find(fx => fx.tipo === cData.nome)) {
+      if (cData.isFixa || fixasAtivas.find(fx => (fx.nome || fx.tipo) === cData.nome)) {
         nomesBD[cData.nome] = true;
       }
     });
 
-    // Merge Fixas Virtuais
     const unified = [...bdContas];
     fixasAtivas.forEach(fx => {
-      if (!nomesBD[fx.tipo]) {
-        // Conta fixa não existe nesse mês no BD real, vamos criá-la virtualmente
+      const fName = fx.nome || fx.tipo;
+      if (!nomesBD[fName]) {
         unified.push({
           id: `virtual_${fx.id}`,
-          nome: fx.tipo,
+          nome: fName,
           valor: fx.valor,
           status: "pendente",
           isFixa: true,
-          isVirtual: true
+          isVirtual: true,
+          diaVencimento: fx.diaVencimento,
+          emoji: fx.emoji
         });
       }
     });
@@ -163,6 +152,9 @@ async function loadContas() {
         const isPago = conta.status === "pago";
         const isAdiantado = !!conta.adiantado;
         const isVirtual = !!conta.isVirtual;
+        const isParcelado = conta.tipoLancamento === "parcelado";
+        const jaEraPagaAoCadastrar = !!conta.jaEraPagaAoCadastrar;
+
         const fixaBorder = conta.isFixa ? "fixa-highlight" : "";
         const idQuoted = `'${conta.id}'`;
         const valQuoted = conta.valor;
@@ -170,23 +162,33 @@ async function loadContas() {
         let badgeClass = isPago ? "pago" : "pendente";
         let badgeDisplay = conta.status;
         if (isAdiantado) {
-          badgeClass = "adiantado";
-          badgeDisplay = "ADIANTADO";
+          badgeClass = "adiantado"; badgeDisplay = "ADIANTADO";
         }
 
         const toggleText = isPago ? "Desmarcar Pago" : "✔ Pagar";
         const toggleAction = isPago ? "pendente" : "pago";
 
-        // btn actions logic HTML injecting functions globally
         const btnToggleHtml = `<button class="btn-action" onclick="togglePagamento(${idQuoted}, ${isVirtual}, '${conta.nome}', ${valQuoted}, '${toggleAction}')">${toggleText}</button>`;
         const btnAdiantarHtml = !isPago ? `<button class="btn-action" style="color:var(--blue-500); border-color:var(--blue-200);" onclick="adiantarConta(${idQuoted}, '${conta.nome}', ${valQuoted}, ${isVirtual})">Adiantar</button>` : "";
         const btnExcluirHtml = `<button class="btn-action danger" onclick="deleteConta(${idQuoted}, ${isVirtual})">Excluir</button>`;
+
+        // Construção de badges e infos
+        let badgesHtml = "";
+        if (conta.isFixa) badgesHtml += `<span class="badge fixa">Fixa</span>`;
+        if (isParcelado) badgesHtml += `<span class="badge" style="background:#e0e7ff; color:#4338ca;">Parcela ${conta.numeroParcela}/${conta.quantidadeParcelas}</span>`;
+        if (jaEraPagaAoCadastrar) badgesHtml += `<span class="badge" style="background:#f3f4f6; color:#9ca3af;">Já era paga</span>`;
+
+        let extraInfosHtml = "";
+        if (conta.emoji) extraInfosHtml += `<span style="font-size:1.1rem; margin-right:4px;">${conta.emoji}</span>`;
+        if (conta.diaVencimento) extraInfosHtml += `<span style="font-size:.7rem; color:var(--gray-500); margin-left:6px; display:inline-block; border-left:1px solid var(--gray-300); padding-left:6px;">Venc: ${conta.diaVencimento}</span>`;
+        if (conta.observacao) extraInfosHtml += `<div style="font-size:.7rem; color:var(--gray-400); margin-top:2px;">${conta.observacao}</div>`;
 
         const item = document.createElement("div");
         item.className = `list-item ${fixaBorder}`;
         item.innerHTML = `
           <div class="list-item-left">
-            <span class="list-item-title">${conta.nome} ${conta.isFixa ? '<span class="badge fixa">Fixa</span>' : ''}</span>
+            <span class="list-item-title">${extraInfosHtml.includes('emoji') ? conta.emoji + ' ' : ''}${conta.nome} ${badgesHtml} ${conta.diaVencimento ? '<span style="font-size:.7rem; color:var(--gray-500); margin-left:6px;">Venc: '+conta.diaVencimento+'</span>' : ''}</span>
+            ${conta.observacao ? '<div style="font-size:.7rem; color:var(--gray-400); margin-top:2px;">' + conta.observacao + '</div>' : ''}
             <div class="item-actions">
               ${btnToggleHtml}
               ${btnAdiantarHtml}
@@ -212,23 +214,62 @@ $("formConta").addEventListener("submit", async (e) => {
 
   const nome = $("contaNome").value.trim();
   const valor = Number($("contaValor").value);
-  const mes = Number($("contaMes").value);
-  const ano = Number($("contaAno").value);
+  const mesIni = Number($("contaMes").value);
+  const anoIni = Number($("contaAno").value);
+  const qtdParc = Number($("contaQtdParc").value);
+  const pagas = Number($("contaPagas").value);
+  const vencStr = $("contaVenc").value;
+  const venc = vencStr ? Number(vencStr) : null;
+  const observacao = $("contaObs").value.trim();
+
+  if (qtdParc < 1) { alert("Quantidade de parcelas inválida."); $("btnSalvar").disabled = false; return; }
+  if (pagas > qtdParc) { alert("As parcelas pagas não podem exceder o total preenchido."); $("btnSalvar").disabled = false; return; }
+  if (venc !== null && (venc < 1 || venc > 31)) { alert("Dia de vencimento deve ser entre 1 e 31."); $("btnSalvar").disabled = false; return; }
+
+  const tipoLancamento = qtdParc > 1 ? "parcelado" : "simples";
+  const grupoId = qtdParc > 1 ? generateGroupId() : null;
 
   try {
-    await addDoc(collection(db, `users/${currentUser.uid}/contas`), {
-      nome, valor, mes, ano, status: "pendente", adiantado: false, dataCriacao: serverTimestamp()
-    });
+    let curMes = mesIni, curAno = anoIni;
+    const batchPromises = [];
     
-    $("contaNome").value = "";
-    $("contaValor").value = "";
+    // Gerar documentos dinamicamente
+    for (let c = 1; c <= qtdParc; c++) {
+      const isAlreadyPaid = c <= pagas;
+      
+      batchPromises.push(addDoc(collection(db, `users/${currentUser.uid}/contas`), {
+        nome, valor,
+        mes: curMes,
+        ano: curAno,
+        status: isAlreadyPaid ? "pago" : "pendente",
+        dataCriacao: serverTimestamp(),
+        adiantado: false,
+        dataAdiantamento: null,
+        tipoLancamento,
+        quantidadeParcelas: qtdParc,
+        numeroParcela: c,
+        grupoParcelamentoId: grupoId,
+        jaEraPagaAoCadastrar: isAlreadyPaid,
+        diaVencimento: venc,
+        observacao
+      }));
+
+      // Avança data
+      curMes++;
+      if (curMes > 12) { curMes = 1; curAno++; }
+    }
+
+    await Promise.all(batchPromises);
     
-    $("filterMes").value = mes;
-    $("filterAno").value = ano;
+    $("formConta").reset();
+    
+    // Volta o filter para a view inicial em que estava trabalhando
+    $("filterMes").value = mesIni;
+    $("filterAno").value = anoIni;
     loadContas();
   } catch (error) {
-    console.error("Erro ao salvar conta", error);
-    alert("Erro ao salvar a conta.");
+    console.error("Erro ao salvar", error);
+    alert("Erro ao salvar.");
   }
 
   $("btnSalvar").disabled = false;

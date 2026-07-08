@@ -1,12 +1,12 @@
 // ============================================================
-// contas-fixas.js — Lógica de cadastro das contas fixas
+// contas-fixas.js — Lógica de cadastro das contas fixas (Padrão + Custom)
 // Finança Fácil | src/financas/contas-fixas/contas-fixas.js
 // ============================================================
 
 import { auth, db } from "../../firebase/firebase-config.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { 
-  collection, query, getDocs, doc, setDoc, serverTimestamp 
+  collection, query, getDocs, doc, setDoc, addDoc, deleteDoc, serverTimestamp 
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const $ = id => document.getElementById(id);
@@ -14,7 +14,6 @@ const $ = id => document.getElementById(id);
 let currentUser = null;
 const fixasGrid = $("fixasGrid");
 
-// Tipos requeridos e seus ícones
 const TIPOS_FIXAS = [
   { tipo: "Aluguel",     iconClass: "icon-aluguel", svg: `<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline>` },
   { tipo: "Água",        iconClass: "icon-agua",    svg: `<path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path>` },
@@ -32,93 +31,132 @@ async function carregarFixas() {
   const q = query(collection(db, `users/${currentUser.uid}/contasFixas`));
   const snapshot = await getDocs(q);
 
-  // Mapeia do firestore
   const DB_FIXAS = {};
+  const CUSTOM_FIXAS = [];
+
   snapshot.forEach(docSnap => {
-    DB_FIXAS[docSnap.data().tipo] = {
-      id: docSnap.id,
-      valor: docSnap.data().valor,
-      diaVencimento: docSnap.data().diaVencimento,
-      ativo: docSnap.data().ativo
-    };
+    const d = docSnap.data();
+    if (d.personalizada) {
+      CUSTOM_FIXAS.push({ id: docSnap.id, ...d });
+    } else {
+      DB_FIXAS[d.tipo] = { id: docSnap.id, ...d };
+    }
   });
 
   fixasGrid.innerHTML = "";
   const template = $("tplFixa");
   let sumAtivas = 0;
 
-  TIPOS_FIXAS.forEach(f => {
-    const dataBD = DB_FIXAS[f.tipo] || { valor: "", diaVencimento: "", ativo: false };
-    
-    if (dataBD.ativo) {
-      sumAtivas += Number(dataBD.valor || 0);
-    }
+  // Lógica de Renderização Reaproveitável
+  function renderCard(dataObj, isCustom) {
+    const dataBD = { 
+      id: dataObj.id, 
+      valor: dataObj.valor || "", 
+      diaVencimento: dataObj.diaVencimento || "", 
+      ativo: dataObj.ativo || false,
+      nome: dataObj.nome || dataObj.tipo,
+      emoji: dataObj.emoji || "",
+      personalizada: !!dataObj.personalizada
+    };
+
+    if (dataBD.ativo) sumAtivas += Number(dataBD.valor || 0);
 
     const node = template.content.cloneNode(true);
     const card = node.querySelector(".fixa-card");
+    const lblTipo = node.querySelector(".lbl-tipo");
     
-    node.querySelector(".lbl-tipo").textContent = f.tipo;
+    lblTipo.textContent = dataBD.nome;
+
     const icn = node.querySelector(".fixa-icon");
-    icn.className = `fixa-icon ${f.iconClass}`;
-    icn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke-width="2">${f.svg}</svg>`;
+    if (isCustom) {
+      icn.style.background = "#f3f4f6"; // gray background for custom
+      if (dataBD.emoji) {
+        icn.innerHTML = `<span style="font-size:1.1rem;">${dataBD.emoji}</span>`;
+      } else {
+        icn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke="var(--gray-600)"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>`;
+      }
+    } else {
+      icn.className = `fixa-icon ${dataObj.iconClass}`;
+      icn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke-width="2">${dataObj.svg}</svg>`;
+    }
     
     const inpChk = node.querySelector(".chk-ativo");
     const inpVal = node.querySelector(".inp-valor");
     const inpDia = node.querySelector(".inp-dia");
     const btnSalvar = node.querySelector(".save-btn");
+    const btnDel = node.querySelector(".del-btn");
 
     inpChk.checked = dataBD.ativo;
     inpVal.value = dataBD.valor;
     inpDia.value = dataBD.diaVencimento;
 
     if (!dataBD.ativo) card.classList.add("inativo");
+    if (isCustom) btnDel.style.display = "block"; // Only custom can be permanently deleted from ui
 
     inpChk.addEventListener("change", () => {
-      if (inpChk.checked) card.classList.remove("inativo");
-      else card.classList.add("inativo");
+      card.classList.toggle("inativo", !inpChk.checked);
     });
 
     btnSalvar.addEventListener("click", async () => {
       const v = Number(inpVal.value) || 0;
-      const d = Number(inpDia.value) || 1;
+      const d = Number(inpDia.value) || null;
       const a = inpChk.checked;
 
       if (a && v <= 0) {
-        alert("Informe o valor estimado da conta.");
-        return;
+        alert("Informe o valor da conta fixa."); return;
       }
-
       btnSalvar.disabled = true;
       btnSalvar.textContent = "Salvando...";
 
-      // Usa um slug do tipo como ID para evitar duplicatas, ou apenas um doc set com ID == slug
-      const idStr = f.tipo.normalize("NFD").replace(/[\\u0300-\\u036f]/g, "").toLowerCase().replace(/[^a-z]/g, "");
-
       try {
-        await setDoc(doc(db, `users/${currentUser.uid}/contasFixas`, idStr), {
-          tipo: f.tipo,
-          valor: v,
-          diaVencimento: d,
-          ativo: a,
-          ultimaAtualizacao: serverTimestamp()
-        }, { merge: true });
-
-        // Feedback suave
+        if (isCustom) {
+          await updateDoc(doc(db, `users/${currentUser.uid}/contasFixas`, dataBD.id), {
+            valor: v, diaVencimento: d, ativo: a, ultimaAtualizacao: serverTimestamp()
+          });
+        } else {
+          // Padrão usa docId = slug do tipo nativo
+          const idStr = dataBD.nome.normalize("NFD").replace(/[\\u0300-\\u036f]/g, "").toLowerCase().replace(/[^a-z]/g, "");
+             await setDoc(doc(db, `users/${currentUser.uid}/contasFixas`, idStr), {
+            tipo: dataBD.nome, valor: v, diaVencimento: d, ativo: a,
+            personalizada: false, ultimaAtualizacao: serverTimestamp()
+          }, { merge: true });
+        }
         btnSalvar.textContent = "Salvo!";
         setTimeout(() => { btnSalvar.textContent = "Salvar"; btnSalvar.disabled = false; }, 1000);
-        
-        // Recalcular total sem precisar recarregar toda a page
         recalcularSum();
-
       } catch (err) {
-        console.error("Erro", err);
         alert("Erro ao salvar.");
-        btnSalvar.textContent = "Salvar";
-        btnSalvar.disabled = false;
+        btnSalvar.textContent = "Salvar"; btnSalvar.disabled = false;
       }
     });
 
+    if (isCustom) {
+      btnDel.addEventListener("click", async () => {
+        if (confirm("Tem certeza que deseja excluir esta conta fixa personalizada?")) {
+           try {
+             await deleteDoc(doc(db, `users/${currentUser.uid}/contasFixas`, dataBD.id));
+             card.remove(); // removes locally
+             recalcularSum();
+           } catch(e) {
+             alert("Erro ao excluir.");
+           }
+        }
+      });
+    }
+
     fixasGrid.appendChild(node);
+  }
+
+  // Renderiza Padrão
+  TIPOS_FIXAS.forEach(f => {
+    const dataBD = DB_FIXAS[f.tipo] || { ...f, ativo: false, valor: "", diaVencimento: "" };
+    // Pass everything as base object
+    renderCard({ ...f, ...dataBD }, false);
+  });
+
+  // Renderiza Custom
+  CUSTOM_FIXAS.forEach(c => {
+    renderCard(c, true);
   });
 
   $("totalFixas").textContent = formatBRL(sumAtivas);
@@ -134,6 +172,31 @@ function recalcularSum() {
   });
   $("totalFixas").textContent = formatBRL(s);
 }
+
+// Handler custom form Submit
+$("formCustomFixa").addEventListener("submit", async(e) => {
+  e.preventDefault();
+  $("btnCustomSalvar").disabled = true;
+
+  const nome = $("customNome").value.trim();
+  const valor = Number($("customValor").value);
+  const v = $("customVenc").value;
+  const diaVenc = v ? Number(v) : null;
+  const emoji = $("customEmoji").value.trim();
+
+  try {
+     await addDoc(collection(db, `users/${currentUser.uid}/contasFixas`), {
+        nome, valor, diaVencimento: diaVenc, emoji, ativa: true, ativo: true, // safe duplicate
+        personalizada: true, dataCriacao: serverTimestamp()
+     });
+     $("formCustomFixa").reset();
+     carregarFixas();
+  } catch(e) {
+     console.error("Erro", e);
+     alert("Deu erro ao salvar.");
+  }
+  $("btnCustomSalvar").disabled = false;
+});
 
 onAuthStateChanged(auth, (user) => {
   if (!user) {

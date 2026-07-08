@@ -36,37 +36,73 @@
     <p class="summary-value negative" id="totalPendente">R$ 0,00</p>
   </div>
 
-  <!-- Formulário -->
-  <form class="form-card" id="formConta">
-    <h3 style="margin-bottom:1rem; font-size:1rem; color: #111827;">Adicionar Nova Conta</h3>
-    <div class="form-grid">
-      <div class="filter-group">
-        <label>Nome (ex: Luz, Nubank)</label>
-        <input type="text" id="contaNome" class="text-input" required />
-      </div>
-      <div class="filter-group">
-        <label>Valor (R$)</label>
-        <input type="number" id="contaValor" class="text-input" step="0.01" min="0.01" required />
-      </div>
-    </div>
-    <div class="form-grid">
-      <div class="filter-group">
-        <label>Mês (1-12)</label>
-        <select id="contaMes" class="select-input" required></select>
-      </div>
-      <div class="filter-group">
-        <label>Ano</label>
-        <input type="number" id="contaAno" class="text-input" required />
-      </div>
-    </div>
-    <button type="submit" class="btn-submit" id="btnSalvar">Salvar Conta</button>
-  </form>
-
-  <!-- Lista de Contas -->
-  <h3 style="margin-bottom:1rem; font-size:1rem; color: #111827;">Contas do Mês <span id="lblMesAtual"></span></h3>
+  <!-- Histórico / Lista de Contas -->
+  <h3 style="margin-bottom:1rem; font-size:1.1rem; color: #111827;">Contas do Mês <span id="lblMesAtual"></span></h3>
+  <div class="list-legend" style="display:flex; gap:1rem; margin-bottom:1rem; font-size:0.75rem; color:var(--gray-500);">
+    <span style="display:flex; align-items:center; gap:4px;"><span class="badge fixa">Fixa</span> Lançada dinamicamente</span>
+    <span style="display:flex; align-items:center; gap:4px;"><span class="badge adiantado">Adiantado</span> Paga antes do mês alvo</span>
+  </div>
+  
   <div id="listaContas" class="list-container">
     <div class="empty-state">Carregando contas...</div>
   </div>
+
+  <!-- Formulário -->
+  <form class="form-card" id="formConta" style="margin-top:2.5rem;">
+    <h3 style="margin-bottom:1rem; font-size:1.1rem; color: #111827;">Adicionar Nova Conta</h3>
+    
+    <div class="form-grid">
+      <div class="filter-group">
+        <label>Nome (ex: Luz, Cama Box)</label>
+        <input type="text" id="contaNome" class="text-input" required />
+      </div>
+      <div class="filter-group">
+        <label>Valor da Parcela/Conta (R$)</label>
+        <input type="number" id="contaValor" class="text-input" step="0.01" min="0.01" required />
+      </div>
+    </div>
+    
+    <div class="form-grid">
+      <div class="filter-group">
+        <label>Mês Inicial (1-12)</label>
+        <select id="contaMes" class="select-input" required></select>
+      </div>
+      <div class="filter-group">
+        <label>Ano Inicial</label>
+        <input type="number" id="contaAno" class="text-input" required />
+      </div>
+    </div>
+
+    <div class="form-grid" style="background:var(--gray-50); padding:1rem; border-radius:8px; border:1px solid var(--gray-200);">
+      <div class="filter-group">
+        <label>Quantidade de Parcelas</label>
+        <span class="details-label">Deixe 1 para contas únicas</span>
+        <input type="number" id="contaQtdParc" class="text-input" min="1" value="1" required />
+      </div>
+      <div class="filter-group">
+        <label>Parcelas já Pagas</label>
+        <span class="details-label">Útil para compras antigas</span>
+        <input type="number" id="contaPagas" class="text-input" min="0" value="0" required />
+      </div>
+    </div>
+    
+    <div class="form-grid">
+      <div class="filter-group">
+        <label>Dia Vencimento (Opcional)</label>
+        <input type="number" id="contaVenc" class="text-input" min="1" max="31" placeholder="Ex: 5" />
+      </div>
+      <div class="filter-group">
+        <label>Observação (Opcional)</label>
+        <input type="text" id="contaObs" class="text-input" placeholder="Detalhes adicionais..." />
+      </div>
+    </div>
+
+    <p style="font-size:0.75rem; color:var(--gray-500); margin-bottom:1rem; line-height:1.4;">
+      <strong>Dica:</strong> Se a quantidade de parcelas for <strong>1</strong>, a conta será tratada de forma normal. Se for <strong>maior que 1</strong>, criaremos automaticamente todos os meses previstos.
+    </p>
+
+    <button type="submit" class="btn-submit" id="btnSalvar">Salvar Conta</button>
+  </form>
 
   <script type="module" src="contas.js"></script>
 </body>
