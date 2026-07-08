@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Relatórios de Empréstimos — Finança Fácil</title>
+  <link rel="stylesheet" href="relatorios.css" />
+</head>
+<body>
+
+  <header class="page-header">
+    <h1 class="page-title">📊 Relatórios de Empréstimos</h1>
+    <a href="../../dashboard/dashboard.html" class="btn-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline>
+      </svg>
+      Voltar
+    </a>
+  </header>
+
+  <p style="color:var(--gray-500); font-size:.85rem; margin-top:-1.5rem; margin-bottom:1.5rem;">
+    Visão geral consolidada dos seus empréstimos, recebimentos e devedores.
+  </p>
+
+  <div style="display:flex; gap:.75rem; justify-content:flex-end; margin-bottom:1.5rem; flex-wrap:wrap;">
+    <a href="../bancos/bancos.html" class="btn-submit" style="width:auto; text-decoration:none; background:var(--gray-700);">🏦 Bancos</a>
+    <a href="../devedores/devedores.html" class="btn-submit" style="width:auto; text-decoration:none; background:var(--blue-600);">🤝 Devedores</a>
+  </div>
+
+  <!-- Cards Resumo -->
+  <h3 style="font-size:1rem; margin-bottom:1rem; color:var(--gray-900);">Resumo Geral</h3>
+  <div class="report-grid" id="reportGrid">
+    <div class="report-card highlight-card">
+      <span class="rc-lbl">Total Emprestado</span>
+      <span class="rc-val" id="rTotalEmprestado">—</span>
+    </div>
+    <div class="report-card">
+      <span class="rc-lbl">Total a Receber</span>
+      <span class="rc-val" id="rTotalReceber" style="color:var(--blue-600)">—</span>
+    </div>
+    <div class="report-card">
+      <span class="rc-lbl">Total Já Recebido</span>
+      <span class="rc-val" id="rTotalRecebido" style="color:var(--green-600)">—</span>
+    </div>
+    <div class="report-card">
+      <span class="rc-lbl">Devedores Ativos</span>
+      <span class="rc-val" id="rDevedoresAtivos">—</span>
+    </div>
+    <div class="report-card" style="border-left:4px solid var(--red-500);">
+      <span class="rc-lbl">Parcelas Atrasadas</span>
+      <span class="rc-val" id="rParcelasAtrasadas" style="color:var(--red-500)">—</span>
+    </div>
+  </div>
+
+  <!-- Destaques -->
+  <h3 style="font-size:1rem; margin-bottom:1rem; color:var(--gray-900);">Destaques</h3>
+  <div class="report-grid" style="grid-template-columns:1fr 1fr;">
+    <div class="report-card">
+      <span class="rc-lbl">Maior Valor Emprestado</span>
+      <span class="rc-val" id="rMaiorDevedor" style="font-size:1.1rem;">—</span>
+      <span class="rc-sub" id="rMaiorDevedorNome"></span>
+    </div>
+    <div class="report-card">
+      <span class="rc-lbl">Cartão com Maior Limite Usado</span>
+      <span class="rc-val" id="rMaiorCartao" style="font-size:1.1rem;">—</span>
+      <span class="rc-sub" id="rMaiorCartaoNome"></span>
+    </div>
+  </div>
+
+  <!-- Mês com maior volume -->
+  <h3 style="font-size:1rem; margin:1.5rem 0 1rem; color:var(--gray-900);">Mês com Maior Volume de Recebimento Previsto</h3>
+  <div class="report-card highlight-card" style="max-width:400px; margin-bottom:2rem;">
+    <span class="rc-lbl">Mês</span>
+    <span class="rc-val" id="rMesMaiorVolume">—</span>
+    <span class="rc-sub" id="rMesMaiorVolumeSub"></span>
+  </div>
+
+  <!-- Lista ordenada de devedores -->
+  <h3 style="font-size:1rem; margin-bottom:1rem; color:var(--gray-900);">Ranking de Devedores (por valor)</h3>
+  <ul class="top-list" id="rankingList">
+    <li style="color:var(--gray-400)">Carregando...</li>
+  </ul>
+
+  <script type="module" src="relatorios.js"></script>
+</body>
+</html>

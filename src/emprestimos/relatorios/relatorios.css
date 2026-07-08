@@ -1,0 +1,38 @@
+/* ============================================================
+   relatorios.css — Estilos para relatórios de empréstimos
+   Finança Fácil | src/emprestimos/relatorios/relatorios.css
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('../bancos/bancos.css');
+
+.report-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.report-card {
+  background: #fff; border-radius: var(--radius-lg); padding: 1.25rem;
+  border: 1px solid var(--gray-200); box-shadow: var(--shadow-sm);
+  display: flex; flex-direction: column; gap: .3rem;
+}
+.report-card .rc-lbl { font-size: .7rem; color: var(--gray-500); font-weight: 700; text-transform: uppercase; }
+.report-card .rc-val { font-size: 1.4rem; font-weight: 800; color: var(--gray-900); }
+.report-card .rc-sub { font-size: .75rem; color: var(--gray-400); }
+
+.highlight-card {
+  background: linear-gradient(135deg, var(--blue-50), #fff);
+  border-left: 4px solid var(--blue-500);
+}
+
+.top-list { list-style: none; padding: 0; }
+.top-list li {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: .75rem 1rem; background: #fff; border-radius: 8px;
+  border: 1px solid var(--gray-200); margin-bottom: .5rem;
+}
+.top-name { font-weight: 700; color: var(--gray-900); font-size: .9rem; }
+.top-val { font-weight: 800; color: var(--blue-600); }
+
+@media (max-width: 600px) { .report-grid { grid-template-columns: 1fr 1fr; } }

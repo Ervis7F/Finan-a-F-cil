@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Detalhes do Devedor — Finança Fácil</title>
+  <link rel="stylesheet" href="devedores.css" />
+  <style>
+    .info-grid { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:2rem; }
+    .info-card { background:#fff; border-radius:var(--radius-lg); padding:1.25rem; border:1px solid var(--gray-200); box-shadow:var(--shadow-sm); }
+    .info-lbl { font-size:.7rem; color:var(--gray-500); font-weight:700; text-transform:uppercase; margin-bottom:.3rem; }
+    .info-val { font-size:1.2rem; font-weight:800; color:var(--gray-900); }
+
+    .progress-section { margin-bottom:2rem; }
+    .progress-row { display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:.75rem; }
+    .progress-chip { padding:.4rem .75rem; border-radius:8px; font-size:.8rem; font-weight:700; }
+    .chip-pagas { background:var(--green-50); color:var(--green-600); }
+    .chip-pend  { background:var(--blue-50); color:var(--blue-600); }
+    .chip-atras { background:var(--red-50); color:var(--red-500); }
+
+    .parcela-card { background:#fff; border-radius:var(--radius-lg); padding:1.25rem; border:1px solid var(--gray-200); box-shadow:var(--shadow-sm); margin-bottom:1rem; }
+    .parc-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:.75rem; }
+    .parc-title { font-weight:800; font-size:1rem; color:var(--gray-900); }
+    .parc-periodo { font-size:.8rem; color:var(--gray-500); }
+    .parc-vals { display:grid; grid-template-columns:1fr 1fr; gap:.5rem; margin:.5rem 0; }
+    .pv-lbl { font-size:.7rem; color:var(--gray-500); }
+    .pv-val { font-size:1rem; font-weight:700; }
+    .parc-actions { display:flex; gap:.5rem; flex-wrap:wrap; margin-top:.75rem; padding-top:.75rem; border-top:1px solid var(--gray-100); }
+    .parc-juros-info { background:var(--red-50); padding:.5rem .75rem; border-radius:8px; font-size:.8rem; color:var(--red-500); font-weight:600; margin-top:.5rem; }
+
+    /* Modal overlay for registrar atraso */
+    .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:1000; justify-content:center; align-items:center; }
+    .modal-overlay.open { display:flex; }
+    .modal-box { background:#fff; border-radius:var(--radius-lg); padding:2rem; width:90%; max-width:420px; box-shadow:0 8px 32px rgba(0,0,0,.15); }
+    .modal-title { font-size:1.1rem; font-weight:800; margin-bottom:1rem; }
+
+    @media(max-width:600px) { .info-grid { grid-template-columns:1fr; } .parc-vals { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body>
+
+  <header class="page-header">
+    <h1 class="page-title" id="pageTitle">📋 Detalhes</h1>
+    <a href="devedores.html" class="btn-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline>
+      </svg>
+      Voltar
+    </a>
+  </header>
+
+  <!-- Resumo do devedor -->
+  <div class="info-grid" id="infoGrid">
+    <div class="info-card"><div class="info-lbl">Valor Emprestado</div><div class="info-val" id="infoEmprestado">—</div></div>
+    <div class="info-card"><div class="info-lbl">Total a Receber</div><div class="info-val" id="infoTotal" style="color:var(--blue-600)">—</div></div>
+    <div class="info-card"><div class="info-lbl">Juros Mensais</div><div class="info-val" id="infoJuros">—</div></div>
+    <div class="info-card"><div class="info-lbl">Banco / Cartão</div><div class="info-val" id="infoBanco" style="font-size:.95rem;">—</div></div>
+  </div>
+
+  <div id="infoWhatsapp" style="display:none; margin-bottom:1.5rem;">
+    <a id="linkWhatsapp" href="#" target="_blank" class="dev-whatsapp" style="font-size:.9rem;">📱 —</a>
+  </div>
+
+  <!-- Progresso -->
+  <div class="progress-section">
+    <h3 style="font-size:1rem; margin-bottom:.75rem;">Progresso do Empréstimo</h3>
+    <div class="dev-progress-bg" style="height:10px; margin-bottom:.75rem;">
+      <div class="dev-progress-fill" id="progressBar" style="width:0%;"></div>
+    </div>
+    <div class="progress-row" id="progressChips"></div>
+  </div>
+
+  <!-- Parcelas -->
+  <h3 style="font-size:1.1rem; margin-bottom:1rem;">Parcelas</h3>
+  <div id="parcelasContainer">
+    <div class="empty-state">Carregando parcelas...</div>
+  </div>
+
+  <!-- Modal registrar atraso -->
+  <div class="modal-overlay" id="modalAtraso">
+    <div class="modal-box">
+      <div class="modal-title">⚠️ Registrar Atraso</div>
+      <input type="hidden" id="modalParcelaId" />
+      <div class="form-grid" style="margin-bottom:1rem;">
+        <div class="filter-group">
+          <label>Dias de Atraso</label>
+          <input type="number" id="modalDias" class="text-input" min="1" value="1" />
+        </div>
+        <div class="filter-group">
+          <label>Taxa Diária de Juros (%)</label>
+          <input type="number" id="modalTaxa" class="text-input" step="0.01" min="0" value="0.5" />
+        </div>
+      </div>
+      <div class="filter-group" style="margin-bottom:1rem;">
+        <label>Tipo de Juros</label>
+        <select id="modalTipoJuros" class="select-input">
+          <option value="simples">Juros Simples</option>
+          <option value="composto">Juros Compostos</option>
+        </select>
+      </div>
+      <div id="modalPreview" style="background:var(--gray-50); padding:.75rem; border-radius:8px; font-size:.85rem; margin-bottom:1rem; font-weight:600;"></div>
+      <div style="display:flex; gap:.5rem;">
+        <button class="btn-submit" id="btnConfirmarAtraso" style="flex:1;">Confirmar Atraso</button>
+        <button class="btn-submit" id="btnCancelarAtraso" style="flex:0 0 auto; background:var(--gray-400);">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="detalhes-devedor.js"></script>
+</body>
+</html>
