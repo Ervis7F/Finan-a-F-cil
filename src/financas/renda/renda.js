@@ -6,7 +6,7 @@
 import { auth, db } from "../../firebase/firebase-config.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { 
-  collection, query, where, orderBy, onSnapshot, addDoc, serverTimestamp, doc, deleteDoc 
+  collection, query, where, orderBy, getDocs, onSnapshot, addDoc, serverTimestamp, doc, deleteDoc 
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const $ = id => document.getElementById(id);
@@ -38,7 +38,14 @@ function formatBRL(value) {
   return new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
 }
 
-function loadDados() {
+async function fetchFixas() {
+  const qObj = await getDocs(query(collection(db, `users/${currentUser.uid}/contasFixas`), where("ativo", "==", true)));
+  const list = [];
+  qObj.forEach(docSnap => list.push({ ...docSnap.data(), id: docSnap.id }));
+  return list;
+}
+
+async function loadDados() {
   if (!currentUser) return;
   if (unsubscribeRendas) unsubscribeRendas();
   if (unsubscribeContas) unsubscribeContas();
@@ -46,6 +53,8 @@ function loadDados() {
   const mesInfo = Number($("filterMes").value);
   const anoInfo = Number($("filterAno").value);
   $("lblMesAtual").textContent = `(${meses[mesInfo-1]} ${anoInfo})`;
+
+  const fixasAtivas = await fetchFixas();
 
   let totalRenda = 0;
   let totalPendente = 0;
@@ -111,19 +120,38 @@ function loadDados() {
     updateOverview();
   });
 
-  // Listener para Contas Pendentes
+  // Listener para Contas Pendentes (incluindo virtual)
   const qContas = query(
     collection(db, `users/${currentUser.uid}/contas`),
     where("mes", "==", mesInfo),
     where("ano", "==", anoInfo),
-    where("status", "==", "pendente")
+    // Não usamos filter "pendente" aqui porque precisamos saber SE as fixas estão pagas
   );
 
   unsubscribeContas = onSnapshot(qContas, (snapshot) => {
     totalPendente = 0;
+    
+    // As fixas não pagas entram nisso.
+    const bdNomes = {};
+    
     snapshot.forEach(docSnap => {
-      totalPendente += docSnap.data().valor;
+      const c = docSnap.data();
+      if (c.isFixa || fixasAtivas.find(fx => fx.tipo === c.nome)) {
+        bdNomes[c.nome] = true;
+      }
+      
+      if (c.status === "pendente") {
+        totalPendente += c.valor;
+      }
     });
+
+    // Subtrai ou, nesse caso, adiciona as fixas virtuais que não têm registro (logo estão pendentes)
+    fixasAtivas.forEach(fx => {
+      if (!bdNomes[fx.tipo]) {
+        totalPendente += fx.valor;
+      }
+    });
+
     updateOverview();
   });
 }
