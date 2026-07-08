@@ -10,7 +10,11 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
   doc,
-  getDoc
+  getDoc,
+  collection,
+  query,
+  where,
+  getDocs
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { renderDashboardChecklist, injectContextHelp } from "../onboarding/onboarding.js";
 
@@ -78,31 +82,61 @@ function preencherUsuarioSidebar(user, nomeCompleto) {
   $("userAvatar").textContent = (nomeCompleto || user.displayName || "U")[0].toUpperCase();
 }
 
-// ── Preenche os dados do mês (dados de exemplo) ────────────────
-function preencherResumoMes() {
-  /*
-   * DADOS DE EXEMPLO — substituir por consultas reais ao Firestore:
-   *
-   * Contas a pagar:
-   *   coleção: users/{uid}/contas
-   *   filtro:  mes == mesAtual && ano == anoAtual
-   *   soma:    campo "valor" de todos os documentos filtrados
-   *
-   * Renda:
-   *   coleção: users/{uid}/renda
-   *   filtro:  mes == mesAtual && ano == anoAtual
-   *   soma:    campo "valor" de todos os documentos filtrados
-   *
-   * Saldo previsto: renda - contas
-   */
-  const dadosExemplo = {
-    contas: 0,   // R$ 0,00 — nenhuma conta cadastrada ainda
-    renda:  0,   // R$ 0,00 — nenhuma renda cadastrada ainda
-  };
-  const saldo = dadosExemplo.renda - dadosExemplo.contas;
+// ── Preenche os dados do mês reais ────────────────
+async function preencherResumoMes(userUid) {
+  const dataAtual = new Date();
+  const mesAtual = dataAtual.getMonth() + 1;
+  const anoAtual = dataAtual.getFullYear();
 
-  $("totalContas").textContent   = formatBRL(dadosExemplo.contas);
-  $("totalRenda").textContent    = formatBRL(dadosExemplo.renda);
+  let somaRenda = 0;
+  let somaContas = 0;
+
+  try {
+    // 1. Buscar Renda do Mês
+    const qRenda = query(
+      collection(db, `users/${userUid}/rendas`),
+      where("mes", "==", mesAtual),
+      where("ano", "==", anoAtual)
+    );
+    const snapRenda = await getDocs(qRenda);
+    snapRenda.forEach(d => somaRenda += (Number(d.data().valor) || 0));
+
+    // 2. Buscar Contas Avulsas (ou Fixas já mapeadas)
+    const qContas = query(
+      collection(db, `users/${userUid}/contas`),
+      where("mes", "==", mesAtual),
+      where("ano", "==", anoAtual)
+    );
+    const snapContas = await getDocs(qContas);
+    const nomesJaDeduplicados = {};
+    snapContas.forEach(d => {
+       const dt = d.data();
+       somaContas += (Number(dt.valor) || 0);
+       if (dt.nome) nomesJaDeduplicados[dt.nome] = true;
+    });
+
+    // 3. Somar Contas Fixas Globais Ativas que ainda não foram convertidas no mês atual
+    const qFixas = query(
+      collection(db, `users/${userUid}/contasFixas`),
+      where("ativo", "==", true)
+    );
+    const snapFixas = await getDocs(qFixas);
+    snapFixas.forEach(d => {
+       const fx = d.data();
+       const nomeF = fx.nome || fx.tipo;
+       if (nomeF && !nomesJaDeduplicados[nomeF]) {
+         somaContas += (Number(fx.valor) || 0);
+       }
+    });
+
+  } catch (error) {
+    console.error("Erro ao buscar resumo do mês: ", error);
+  }
+
+  const saldo = somaRenda - somaContas;
+
+  $("totalContas").textContent   = formatBRL(somaContas);
+  $("totalRenda").textContent    = formatBRL(somaRenda);
   $("saldoPrevisto").textContent = formatBRL(saldo);
 
   // Cor do saldo
@@ -184,18 +218,15 @@ onAuthStateChanged(auth, async (user) => {
   }
 
   try {
-    // Busca o nome no Firestore (coleção "users", documento com UID do usuário)
-    let nomeCompleto = user.displayName || "";
-    const userDocRef = doc(db, "users", user.uid);
-    const userSnap   = await getDoc(userDocRef);
-
-    if (userSnap.exists()) {
-      nomeCompleto = userSnap.data().nome || nomeCompleto;
+    // Busca o documento completo do usuário
+    const userDoc = await getDoc(doc(db, "users", user.uid));
+    let nomeCompleto = "";
+    if (userDoc.exists()) {
+      nomeCompleto = userDoc.data().nomeCompleto || "";
     }
 
-    // Popula a UI
     preencherUsuarioSidebar(user, nomeCompleto);
-    preencherResumoMes();
+    await preencherResumoMes(user.uid);
     preencherVisaoAno();
 
     // Injeta onboarding e contexto
