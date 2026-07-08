@@ -237,7 +237,15 @@ window.cobrarWhatsApp = function(parcelaId, numParc, totalParc, mes, ano, valorA
   const nomeCartao = devedorData.nomeCartao;
   const mesTxt = MESES[mes - 1];
 
-  const msg = `Olá, ${nome}. Tudo bem?\n\nSegue a cobrança da parcela ${numParc}/${totalParc}, referente a ${mesTxt}/${ano}, no valor de ${formatBRL(valorAtualizado)}.\n\nChave Pix para pagamento: ${chavePix}\nBanco/Cartão de referência: ${nomeBanco} - ${nomeCartao}\n\nApós o pagamento, me envie o comprovante.\nFaltam ${faltam} parcela(s) para finalizar.\n\nObrigado!`;
+  const msg =
+    `Olá, ${nome}. Tudo bem?\n\n` +
+    `Segue a cobrança da parcela *${numParc}/${totalParc}*, referente a *${mesTxt}/${ano}*, no valor de *${formatBRL(valorAtualizado)}*.\n\n` +
+    `*Chave Pix para pagamento:*\n` +
+    `\`\`\`${chavePix}\`\`\`\n\n` +
+    `*Banco/Cartão de referência:* ${nomeBanco} - ${nomeCartao}\n\n` +
+    `Após o pagamento, me envie o comprovante.\n` +
+    `Faltam *${faltam} parcela(s)* para finalizar.\n\n` +
+    `Obrigado!`;
 
   let num = devedorData.whatsapp.replace(/\D/g, "");
   // Se não começa com código de país, assumir Brasil
