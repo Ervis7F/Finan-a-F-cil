@@ -1,0 +1,171 @@
+/* ============================================================
+   bancos.css — Estilos para o módulo de Bancos e Cartões
+   Finança Fácil | src/emprestimos/bancos/bancos.css
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --green-50:   #f0fdf4;
+  --green-100:  #dcfce7;
+  --green-500:  #22c55e;
+  --green-600:  #16a34a;
+
+  --gray-50:    #f9fafb;
+  --gray-100:   #f3f4f6;
+  --gray-200:   #e5e7eb;
+  --gray-300:   #d1d5db;
+  --gray-400:   #9ca3af;
+  --gray-500:   #6b7280;
+  --gray-600:   #4b5563;
+  --gray-700:   #374151;
+  --gray-900:   #111827;
+
+  --red-50:     #fef2f2;
+  --red-500:    #ef4444;
+
+  --blue-50:    #eff6ff;
+  --blue-500:   #3b82f6;
+  --blue-600:   #2563eb;
+
+  --radius-md:  12px;
+  --radius-lg:  16px;
+  --shadow-sm:  0 1px 3px rgba(0,0,0,.08);
+  --shadow-md:  0 4px 16px rgba(0,0,0,.08);
+  --transition: 200ms cubic-bezier(.4,0,.2,1);
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background: var(--gray-50);
+  color: var(--gray-900);
+  padding: 1.5rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* Header */
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--gray-900);
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+.btn-back {
+  text-decoration: none;
+  font-size: .85rem;
+  font-weight: 600;
+  color: var(--gray-500);
+  display: flex; align-items: center; gap: .4rem;
+  transition: color var(--transition);
+}
+.btn-back:hover { color: var(--gray-900); }
+.btn-back svg { width: 18px; height: 18px; }
+
+/* Forms */
+.form-card {
+  background: #fff;
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--gray-200);
+  margin-bottom: 2rem;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.filter-group { display: flex; flex-direction: column; gap: .3rem; flex: 1; }
+.filter-group label { font-size: .75rem; font-weight: 600; color: var(--gray-600); }
+
+.text-input, .select-input {
+  width: 100%; padding: .6rem; border: 1px solid var(--gray-300); border-radius: 8px; font-family: inherit; font-size: .9rem; outline: none;
+}
+.text-input:focus, .select-input:focus { border-color: var(--blue-500); box-shadow: 0 0 0 2px var(--blue-50); }
+
+.btn-submit {
+  width: 100%; background: var(--blue-600); color: #fff; border: none; padding: .8rem; border-radius: 8px; font-size: .95rem; font-weight: 600; cursor: pointer; transition: background var(--transition);
+}
+.btn-submit:hover:not(:disabled) { background: #1d4ed8; }
+.btn-submit:disabled { opacity: .6; cursor: not-allowed; }
+
+/* Dashboard Topo */
+.dash-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.dash-card {
+  background: #fff; border-radius: var(--radius-lg); padding: 1.25rem;
+  border: 1px solid var(--gray-200); box-shadow: var(--shadow-sm);
+}
+.dash-title { font-size: .75rem; color: var(--gray-500); font-weight: 700; text-transform: uppercase; margin-bottom: 0.5rem; }
+.dash-value { font-size: 1.5rem; font-weight: 800; color: var(--gray-900); }
+
+/* Switch Toggle */
+.switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--gray-300); transition: .4s; border-radius: 24px; }
+.slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+input:checked + .slider { background-color: var(--green-500); }
+input:checked + .slider:before { transform: translateX(20px); }
+
+/* Grid de Bancos */
+.bancos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.empty-state { grid-column: 1/-1; text-align: center; padding: 2rem; color: var(--gray-500); background: #fff; border-radius: var(--radius-lg); border: 1px dashed var(--gray-300); }
+
+.banco-card {
+  background: #fff; border-radius: var(--radius-lg); padding: 1.5rem;
+  box-shadow: var(--shadow-sm); border: 1px solid var(--gray-200);
+  display: flex; flex-direction: column; gap: 1rem; position: relative;
+}
+.banco-card.inativo { opacity: 0.65; filter: grayscale(0.8); }
+
+.b-header { display: flex; justify-content: space-between; align-items: flex-start; }
+.b-banco { font-size: .75rem; color: var(--gray-500); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+.b-cartao { font-size: 1.15rem; font-weight: 800; color: var(--gray-900); }
+.b-badge { font-size: .7rem; padding: .2rem .5rem; border-radius: 8px; font-weight: 700; text-transform: uppercase; }
+.b-badge.ativo { background: var(--green-50); color: var(--green-600); }
+.b-badge.inativo { background: var(--gray-100); color: var(--gray-500); }
+
+.b-stats { display: flex; flex-direction: column; gap: .5rem; margin-top: .5rem; }
+.b-stat-row { display: flex; justify-content: space-between; font-size: .85rem; }
+.b-stat-lbl { color: var(--gray-500); }
+.b-stat-val { font-weight: 600; color: var(--gray-900); }
+
+.b-pix { margin-top: .5rem; padding: .75rem; background: var(--gray-50); border-radius: 8px; border: 1px dashed var(--gray-200); font-size: .8rem; color: var(--gray-600); }
+
+.b-actions { display: flex; gap: .5rem; margin-top: 1rem; border-top: 1px solid var(--gray-100); padding-top: 1rem; }
+.btn-action {
+  flex: 1; padding: .5rem; border-radius: 6px; font-size: .8rem; font-weight: 600; cursor: pointer;
+  background: #fff; color: var(--gray-700); border: 1px solid var(--gray-200); transition: all .2s;
+}
+.btn-action:hover { background: var(--gray-50); border-color: var(--gray-300); }
+.btn-action.danger { color: var(--red-500); }
+.btn-action.danger:hover { background: var(--red-50); border-color: var(--red-200); }
+
+@media (max-width: 600px) {
+  .form-grid { grid-template-columns: 1fr; }
+  .dash-grid { grid-template-columns: 1fr; }
+}

@@ -1,0 +1,35 @@
+/* ============================================================
+   devedores.css — Estilos para o módulo de Devedores
+   Finança Fácil | src/emprestimos/devedores/devedores.css
+   ============================================================ */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('../bancos/bancos.css'); /* Reaproveita toda a base estrutural */
+
+/* Estilos específicos adicionais */
+.devedor-card {
+  background: #fff; border-radius: var(--radius-lg); padding: 1.5rem;
+  box-shadow: var(--shadow-sm); border: 1px solid var(--gray-200);
+  display: flex; flex-direction: column; gap: .75rem; position: relative;
+}
+
+.dev-header { display: flex; justify-content: space-between; align-items: flex-start; }
+.dev-name { font-size: 1.15rem; font-weight: 800; color: var(--gray-900); }
+.dev-badge { font-size: .7rem; padding: .2rem .5rem; border-radius: 8px; font-weight: 700; text-transform: uppercase; }
+.dev-badge.ativo { background: var(--blue-50); color: var(--blue-600); }
+.dev-badge.quitado { background: var(--green-50); color: var(--green-600); }
+.dev-badge.atrasado { background: var(--red-50); color: var(--red-500); }
+
+.dev-bank-tag { display: inline-flex; align-items: center; justify-content: center; background: var(--gray-50); color: var(--gray-500); border: 1px solid var(--gray-200); padding: .2rem .6rem; border-radius: 20px; font-size: .75rem; font-weight: 600; margin-top: .4rem; }
+
+.dev-whatsapp { display: flex; align-items: center; gap: .3rem; font-size: .8rem; color: #16a34a; font-weight: 600; text-decoration: none; margin-top: .2rem; }
+.dev-whatsapp:hover { text-decoration: underline; }
+
+.val-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed var(--gray-200); padding-bottom: .5rem; margin-bottom: .5rem; }
+.val-lbl { font-size: .8rem; color: var(--gray-500); }
+.val-num { font-size: 1.1rem; font-weight: 800; color: var(--gray-900); }
+
+.juros-row { font-size: .75rem; color: var(--gray-500); text-align: right; }
+
+/* Progress bar de parcelas/tempo */
+.dev-progress-bg { width: 100%; height: 6px; background: var(--gray-100); border-radius: 4px; overflow: hidden; margin-top: .5rem; }
+.dev-progress-fill { height: 100%; background: var(--blue-500); border-radius: 4px; }

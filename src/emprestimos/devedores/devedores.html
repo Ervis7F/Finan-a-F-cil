@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Devedores — Finança Fácil</title>
+  <link rel="stylesheet" href="devedores.css" />
+</head>
+<body>
+
+  <header class="page-header">
+    <h1 class="page-title">🤝 Devedores</h1>
+    <a href="../../dashboard/dashboard.html" class="btn-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline>
+      </svg>
+      Voltar
+    </a>
+  </header>
+  
+  <p style="color:var(--gray-500); font-size:.85rem; margin-top:-1.5rem; margin-bottom:1.5rem;">
+    Controle o dinheiro que você emprestou. Você pode vincular um devedor diretamente aos cartões e bancos que você cadastrou no módulo anterior.
+  </p>
+
+  <div style="display:flex; justify-content: flex-end; margin-bottom:1.5rem;">
+    <a href="../bancos/bancos.html" class="btn-submit" style="width:auto; text-decoration:none; background:var(--gray-700);">→ Ir para Bancos/Cartões</a>
+  </div>
+
+  <!-- Resumo -->
+  <div class="dash-grid" style="grid-template-columns: 1fr 1fr;">
+    <div class="dash-card" style="border-left: 4px solid var(--blue-500);">
+      <div class="dash-title">Total Emprestado (Ativos)</div>
+      <div class="dash-value" id="resumoEmprestado" style="color:var(--blue-600)">R$ 0,00</div>
+    </div>
+    <div class="dash-card">
+      <div class="dash-title">Total a Receber (C/ Juros)</div>
+      <div class="dash-value" id="resumoReceber">R$ 0,00</div>
+    </div>
+  </div>
+
+  <!-- Formulário Devedor -->
+  <form class="form-card" id="formDevedor">
+    <h3 style="margin-bottom:1rem; font-size:1.1rem; color: #111827;">Cadastrar Novo Devedor</h3>
+    
+    <div class="form-grid">
+      <div class="filter-group">
+        <label>Nome da Pessoa</label>
+        <input type="text" id="devNome" class="text-input" required />
+      </div>
+      <div class="filter-group">
+        <label>WhatsApp (Opcional)</label>
+        <input type="text" id="devWhats" class="text-input" placeholder="Ex: 11999998888" />
+      </div>
+    </div>
+
+    <!-- Vínculo ao Banco -->
+    <div class="form-grid" style="grid-template-columns: 1fr;">
+      <div class="filter-group">
+        <label>Banco / Cartão utilizado</label>
+        <select id="devBancoSelect" class="select-input" required>
+          <option value="" disabled selected>Carregando bancos...</option>
+        </select>
+        <span style="font-size:0.7rem; color:var(--gray-400); margin-top:2px;">Apenas bancos marcados como ativos aparecerão aqui.</span>
+      </div>
+    </div>
+
+    <div class="form-grid">
+      <div class="filter-group">
+        <label>Valor Emprestado (R$)</label>
+        <input type="number" id="devValorEmprestado" class="text-input" step="0.01" min="1" required />
+      </div>
+      <div class="filter-group">
+        <label>Juros Mensais (%)</label>
+        <span class="details-label">Se não houver juros, deixe 0.</span>
+        <input type="number" id="devJuros" class="text-input" step="0.1" min="0" value="0" />
+      </div>
+    </div>
+
+    <div class="form-grid">
+      <div class="filter-group">
+        <label>Quantidade de Parcelas</label>
+        <input type="number" id="devParcelas" class="text-input" min="1" value="1" required />
+      </div>
+      <div class="filter-group">
+        <label>Observação (Opcional)</label>
+        <input type="text" id="devObs" class="text-input" placeholder="Ex: Para conserto do carro" />
+      </div>
+    </div>
+
+    <div id="prevCalculo" style="background:var(--blue-50); padding:1rem; border-radius:8px; border:1px solid var(--blue-200); margin-bottom:1.5rem; display:none;">
+      <div style="font-size: .8rem; color:var(--blue-600); font-weight:600;">Projeção do Empréstimo:</div>
+      <div style="font-size: 1.1rem; font-weight:800; color:var(--gray-900);" id="prevTotal">Total a receber: R$ 0,00</div>
+    </div>
+
+    <button type="submit" class="btn-submit" id="btnSalvar">Salvar Devedor</button>
+  </form>
+
+  <h3 style="margin-bottom:1rem; font-size:1.1rem; color: #111827;">Lista de Devedores</h3>
+  <div id="devedoresGrid" class="bancos-grid">
+    <div class="empty-state">Carregando devedores...</div>
+  </div>
+
+  <script type="module" src="devedores.js"></script>
+</body>
+</html>

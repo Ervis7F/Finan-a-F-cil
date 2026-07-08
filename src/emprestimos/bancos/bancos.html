@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bancos e Cartões — Finança Fácil</title>
+  <link rel="stylesheet" href="bancos.css" />
+</head>
+<body>
+
+  <header class="page-header">
+    <h1 class="page-title">🏦 Bancos e Cartões</h1>
+    <a href="../../dashboard/dashboard.html" class="btn-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline>
+      </svg>
+      Voltar
+    </a>
+  </header>
+  
+  <p style="color:var(--gray-500); font-size:.85rem; margin-top:-1.5rem; margin-bottom:1.5rem;">
+    Cadastre seus bancos e os limites dos cartões de crédito para futuramente vincular aos seus Devedores, acompanhando os top limites estourados.
+  </p>
+
+  <div style="display:flex; justify-content: flex-end; margin-bottom:1.5rem;">
+    <a href="../devedores/devedores.html" class="btn-submit" style="width:auto; text-decoration:none; background:var(--gray-700);">→ Ir para Devedores</a>
+  </div>
+
+  <!-- Resumo -->
+  <div class="dash-grid">
+    <div class="dash-card">
+      <div class="dash-title">Limite Total</div>
+      <div class="dash-value" id="resumoTotal">R$ 0,00</div>
+    </div>
+    <div class="dash-card" style="border-left: 4px solid var(--red-500);">
+      <div class="dash-title">Limite Usado</div>
+      <div class="dash-value" id="resumoUsado" style="color:var(--red-500)">R$ 0,00</div>
+    </div>
+    <div class="dash-card" style="border-left: 4px solid var(--green-500);">
+      <div class="dash-title">Limite Disponível</div>
+      <div class="dash-value" id="resumoDisponivel" style="color:var(--green-600)">R$ 0,00</div>
+    </div>
+  </div>
+
+  <!-- Formulário Banco -->
+  <form class="form-card" id="formBanco">
+    <h3 style="margin-bottom:1rem; font-size:1.1rem; color: #111827;">Cadastrar Banco / Cartão</h3>
+    
+    <div class="form-grid">
+      <div class="filter-group">
+        <label>Nome do Banco (Ex: Nubank)</label>
+        <input type="text" id="bancoNome" class="text-input" required />
+      </div>
+      <div class="filter-group">
+        <label>Nome/Apelido do Cartão (Ex: Ultravioleta)</label>
+        <input type="text" id="cartaoNome" class="text-input" required />
+      </div>
+    </div>
+
+    <div class="form-grid">
+      <div class="filter-group">
+        <label>Limite Total Recebido (R$)</label>
+        <input type="number" id="bancoLimiteTotal" class="text-input" step="0.01" min="1" required />
+      </div>
+      <div class="filter-group">
+        <label>Limite Atualmente Usado (R$)</label>
+        <input type="number" id="bancoLimiteUsado" class="text-input" step="0.01" min="0" value="0" required />
+      </div>
+    </div>
+
+    <div class="form-grid">
+      <div class="filter-group">
+        <label>Chave Pix (Opcional)</label>
+        <input type="text" id="bancoPix" class="text-input" placeholder="Sua chave..." />
+      </div>
+      <div class="filter-group">
+        <label>Tipo de Chave Pix</label>
+        <select id="bancoTipoPix" class="select-input">
+          <option value="cpf">CPF/CNPJ</option>
+          <option value="email">E-mail</option>
+          <option value="telefone">Telefone</option>
+          <option value="aleatoria">Chave Aleatória</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:1.5rem; margin-top:0.5rem;">
+      <label class="switch" title="Banco Ativo">
+        <input type="checkbox" id="bancoAtivo" checked>
+        <span class="slider"></span>
+      </label>
+      <span style="font-size:0.85rem; font-weight:600; color:var(--gray-600)">Banco Ativo (Devedores podem usá-lo)</span>
+    </div>
+
+    <button type="submit" class="btn-submit" id="btnSalvar">Salvar Banco</button>
+  </form>
+
+  <h3 style="margin-bottom:1rem; font-size:1.1rem; color: #111827;">Cartões Cadastrados</h3>
+  <div id="bancosGrid" class="bancos-grid">
+    <div class="empty-state">Carregando bancos...</div>
+  </div>
+
+  <script type="module" src="bancos.js"></script>
+</body>
+</html>
