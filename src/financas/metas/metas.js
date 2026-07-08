@@ -69,16 +69,13 @@ window.marcarGuardado = async function(metaId, parcelaId, valSugerido) {
   // Na vida real a subcoleção é atualizada e poderíamos rodar uma Cloud Function, 
   // mas vamos fazer aqui incrementando (necessita import increment, vamos apenas refetch or atualizar)
   
-  // Fetch actual doc to add valorGuardado
-  import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js").then(async (fs) => {
-    try {
-      await updateDoc(pRef, { status: "guardado", valorGuardado: valSugerido });
-      await updateDoc(mRef, { valorJaGuardado: fs.increment(valSugerido) });
-    } catch(e) {
-      console.error(e);
-      alert("Erro ao marcar como guardado.");
-    }
-  });
+  try {
+    await updateDoc(pRef, { status: "guardado", valorGuardado: valSugerido });
+    await updateDoc(mRef, { valorJaGuardado: increment(valSugerido) });
+  } catch(e) {
+    console.error(e);
+    alert("Erro ao marcar como guardado.");
+  }
 }
 
 async function loadMetas() {
