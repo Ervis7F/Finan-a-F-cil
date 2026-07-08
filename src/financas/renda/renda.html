@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Renda — Finança Fácil</title>
+  <link rel="stylesheet" href="../contas/contas.css" />
+</head>
+<body>
+
+  <header class="page-header">
+    <h1 class="page-title">💵 Controle de Renda</h1>
+    <a href="../../dashboard/dashboard.html" class="btn-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline>
+      </svg>
+      Voltar
+    </a>
+  </header>
+
+  <!-- Filtro Mês/Ano -->
+  <div class="filter-bar">
+    <div class="filter-group">
+      <label for="filterMes">Mês</label>
+      <select id="filterMes" class="select-input"></select>
+    </div>
+    <div class="filter-group">
+      <label for="filterAno">Ano</label>
+      <input type="number" id="filterAno" class="text-input" />
+    </div>
+  </div>
+
+  <!-- Resumo Geral -->
+  <div class="form-grid">
+    <div class="summary-card" style="margin-bottom:0;">
+      <p class="summary-title">Renda do Mês</p>
+      <p class="summary-value positive" id="totalRenda">R$ 0,00</p>
+    </div>
+    <div class="summary-card" style="margin-bottom:0;">
+      <p class="summary-title">Contas Pendentes</p>
+      <p class="summary-value negative" id="totalPendente">R$ 0,00</p>
+    </div>
+    <div class="summary-card" style="grid-column: 1 / -1;">
+      <p class="summary-title" style="margin-bottom:0.1rem;">Saldo (Renda - Contas)</p>
+      <p style="font-size:0.75rem; color:var(--gray-400); margin-bottom:0.5rem;">Cálculo inclui apenas contas pendentes.</p>
+      <p class="summary-value" id="saldoMes">R$ 0,00</p>
+    </div>
+  </div>
+
+  <!-- Formulário (nova renda) -->
+  <form class="form-card" id="formRenda">
+    <h3 style="margin-bottom:1rem; font-size:1rem; color: #111827;">Cadastrar Renda do Mês</h3>
+    <div class="form-grid">
+      <div class="filter-group">
+        <label>Valor (R$)</label>
+        <input type="number" id="rendaValor" class="text-input" step="0.01" min="0.01" required />
+      </div>
+      <div class="filter-group">
+        <label>Descrição (opcional)</label>
+        <input type="text" id="rendaDescricao" class="text-input" placeholder="Ex: Salário" />
+      </div>
+    </div>
+    <div class="form-grid">
+      <div class="filter-group">
+        <label>Mês (1-12)</label>
+        <select id="rendaMes" class="select-input" required></select>
+      </div>
+      <div class="filter-group">
+        <label>Ano</label>
+        <input type="number" id="rendaAno" class="text-input" required />
+      </div>
+    </div>
+    <button type="submit" class="btn-submit" id="btnSalvar">Salvar Renda</button>
+  </form>
+
+  <!-- Lista de rendas -->
+  <h3 style="margin-bottom:1rem; font-size:1rem; color: #111827;">Histórico de Renda <span id="lblMesAtual"></span></h3>
+  <div id="listaRendas" class="list-container">
+    <div class="empty-state">Carregando rendas...</div>
+  </div>
+
+  <script type="module" src="renda.js"></script>
+</body>
+</html>
