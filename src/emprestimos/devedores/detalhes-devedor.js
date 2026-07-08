@@ -145,7 +145,30 @@ function renderParcelas() {
 window.marcarPago = async function(parcelaId) {
   if (!confirm("Confirmar pagamento desta parcela?")) return;
   const ref = doc(db, `users/${currentUser.uid}/devedores/${devedorId}/parcelas`, parcelaId);
+
+  // Buscar dados da parcela para saber se já foi compensada
+  const pSnap = await getDoc(ref);
+  if (!pSnap.exists()) return;
+  const parcelaData = pSnap.data();
+
+  // Marcar como pago
   await updateDoc(ref, { status: "pago", dataPagamento: serverTimestamp() });
+
+  // Devolver limite ao banco apenas se ainda não foi compensado
+  if (!parcelaData.limiteCompensado && devedorData.bancoId) {
+    const bRef = doc(db, `users/${currentUser.uid}/bancos`, devedorData.bancoId);
+    const bSnap = await getDoc(bRef);
+    if (bSnap.exists()) {
+      const valorDevolver = Number(parcelaData.valorOriginal) || 0;
+      const novoUsado = Math.max(0, (bSnap.data().limiteUsado || 0) - valorDevolver);
+      await updateDoc(bRef, {
+        limiteUsado: novoUsado,
+        limiteDisponivel: (bSnap.data().limiteTotal || 0) - novoUsado
+      });
+    }
+    // Registrar flag para evitar dupla compensação
+    await updateDoc(ref, { limiteCompensado: true });
+  }
 
   // Checar se todas foram pagas => atualizar devedor para "quitado"
   await loadParcelas();

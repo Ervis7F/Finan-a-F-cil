@@ -7,7 +7,7 @@ import { auth, db } from "../../firebase/firebase-config.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { 
   collection, query, orderBy, onSnapshot, getDocs, where,
-  addDoc, serverTimestamp, doc, deleteDoc, getDoc
+  addDoc, serverTimestamp, doc, deleteDoc, getDoc, updateDoc, increment
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { injectContextHelp } from "../../onboarding/onboarding.js";
 
@@ -103,10 +103,37 @@ async function countParcelasPagas(devedorId) {
 // ── Deletar devedor + subcoleção parcelas ───────────────────
 window.deletarDevedor = async function(id) {
   if (!confirm("Excluir permanentemente este devedor e todas as suas parcelas?")) return;
-  // Delete sub-collection parcelas first
+
+  // Calcular o saldo ainda comprometido (parcelas NÃO pagas / não compensadas)
   const parSnap = await getDocs(collection(db, `users/${currentUser.uid}/devedores/${id}/parcelas`));
+  let saldoPendente = 0;
   const delPromises = [];
-  parSnap.forEach(d => delPromises.push(deleteDoc(d.ref)));
+  parSnap.forEach(d => {
+    const p = d.data();
+    // Só conta parcelas que ainda não tiveram o limite devolvido
+    if (!p.limiteCompensado) {
+      saldoPendente += (Number(p.valorOriginal) || 0);
+    }
+    delPromises.push(deleteDoc(d.ref));
+  });
+
+  // Devolver ao banco apenas o saldo que ainda estava comprometido
+  const devedorSnap = await getDoc(doc(db, `users/${currentUser.uid}/devedores`, id));
+  if (devedorSnap.exists() && saldoPendente > 0) {
+    const bancoId = devedorSnap.data().bancoId;
+    if (bancoId) {
+      const bRef = doc(db, `users/${currentUser.uid}/bancos`, bancoId);
+      const bSnap = await getDoc(bRef);
+      if (bSnap.exists()) {
+        const novoUsado = Math.max(0, (bSnap.data().limiteUsado || 0) - saldoPendente);
+        await updateDoc(bRef, {
+          limiteUsado: novoUsado,
+          limiteDisponivel: (bSnap.data().limiteTotal || 0) - novoUsado
+        });
+      }
+    }
+  }
+
   await Promise.all(delPromises);
   await deleteDoc(doc(db, `users/${currentUser.uid}/devedores`, id));
 }
@@ -226,6 +253,17 @@ $("formDevedor").addEventListener("submit", async(e) => {
       observacao: obs,
       dataCriacao: serverTimestamp()
     });
+
+    // Atualizar limite do banco: consumir o valorEmprestado
+    const bRef = doc(db, `users/${currentUser.uid}/bancos`, bId);
+    const bSnap = await getDoc(bRef);
+    if (bSnap.exists()) {
+      const novoUsado = (bSnap.data().limiteUsado || 0) + valE;
+      await updateDoc(bRef, {
+        limiteUsado: novoUsado,
+        limiteDisponivel: (bSnap.data().limiteTotal || 0) - novoUsado
+      });
+    }
 
     // Gerar parcelas automaticamente
     await gerarParcelas(devRef.id, parc, totalCalculado, diaV);
