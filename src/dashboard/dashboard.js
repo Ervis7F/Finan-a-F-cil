@@ -111,7 +111,9 @@ async function preencherResumoMes(userUid) {
     const nomesJaDeduplicados = {};
     snapContas.forEach(d => {
        const dt = d.data();
-       somaContas += (Number(dt.valor) || 0);
+       if (dt.status === "pendente") {
+         somaContas += (Number(dt.valor) || 0);
+       }
        if (dt.nome) nomesJaDeduplicados[dt.nome] = true;
     });
 
