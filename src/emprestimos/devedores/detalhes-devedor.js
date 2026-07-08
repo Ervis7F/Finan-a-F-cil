@@ -70,11 +70,20 @@ async function loadParcelas() {
 // ── Renderizar progresso ────────────────────────────────────
 function renderProgress() {
   let pagas = 0, pendentes = 0, atrasadas = 0;
+  let somaPagas = 0;
+
   parcelasSnap.forEach(p => {
-    if (p.status === "pago") pagas++;
-    else if (p.status === "atrasado") atrasadas++;
-    else pendentes++;
+    if (p.status === "pago") {
+      pagas++;
+      // Aqui usamos valorOriginal para calcular quanto do previsto foi abatido
+      somaPagas += (Number(p.valorOriginal) || 0);
+    } else if (p.status === "atrasado") {
+      atrasadas++;
+    } else {
+      pendentes++;
+    }
   });
+
   const total = parcelasSnap.length;
   const pct = total > 0 ? Math.round((pagas / total) * 100) : 0;
 
@@ -85,6 +94,10 @@ function renderProgress() {
     <span class="progress-chip chip-atras">⚠ ${atrasadas} atrasada(s)</span>
     <span style="font-size:.8rem; font-weight:700; color:var(--gray-600);">${pct}% quitado</span>
   `;
+
+  // Atualizar Card de Valor Pendente
+  const valPendente = Math.max(0, devedorData.valorTotal - somaPagas);
+  $("infoPendente").textContent = formatBRL(valPendente);
 }
 
 // ── Renderizar cards de parcelas ────────────────────────────
