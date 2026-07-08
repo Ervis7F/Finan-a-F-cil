@@ -12,6 +12,7 @@ import {
   doc,
   getDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { renderDashboardChecklist, injectContextHelp } from "../onboarding/onboarding.js";
 
 // ── Utilitários ────────────────────────────────────────────────
 const $ = id => document.getElementById(id);
@@ -197,6 +198,10 @@ onAuthStateChanged(auth, async (user) => {
     preencherResumoMes();
     preencherVisaoAno();
 
+    // Injeta onboarding e contexto
+    await renderDashboardChecklist(user.uid, $("onboardingContainer"));
+    injectContextHelp("dashboard", "greetingSectionContainer");
+
   } catch (error) {
     console.error("Erro ao carregar dados do usuário:", error);
     // Ainda exibe o dashboard com dados de fallback
@@ -211,9 +216,3 @@ onAuthStateChanged(auth, async (user) => {
 // ── Inicializações ─────────────────────────────────────────────
 initSidebarMobile();
 initBtnSair();
-
-// Botão de ajuda (placeholder — futuramente abrirá tutorial de onboarding)
-$("btnHelp").addEventListener("click", () => {
-  // FUTURO: abrir modal/tour guiado (ex: Shepherd.js ou tutorial próprio em src/onboarding/)
-  alert("Tutorial passo a passo em breve! 🚀");
-});

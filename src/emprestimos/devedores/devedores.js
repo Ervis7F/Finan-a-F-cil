@@ -9,6 +9,7 @@ import {
   collection, query, orderBy, onSnapshot, getDocs, where,
   addDoc, serverTimestamp, doc, deleteDoc, getDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { injectContextHelp } from "../../onboarding/onboarding.js";
 
 const $ = id => document.getElementById(id);
 
@@ -243,4 +244,5 @@ onAuthStateChanged(auth, (user) => {
   currentUser = user;
   populateBancosSelect();
   loadDevedores();
+  injectContextHelp("devedores", "obContextHolder");
 });

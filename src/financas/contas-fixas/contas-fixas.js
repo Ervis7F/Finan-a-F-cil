@@ -6,8 +6,9 @@
 import { auth, db } from "../../firebase/firebase-config.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { 
-  collection, query, getDocs, doc, setDoc, addDoc, deleteDoc, serverTimestamp 
+  collection, query, getDocs, doc, setDoc, addDoc, deleteDoc, updateDoc, serverTimestamp 
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { injectContextHelp } from "../../onboarding/onboarding.js";
 
 const $ = id => document.getElementById(id);
 
@@ -205,4 +206,5 @@ onAuthStateChanged(auth, (user) => {
   }
   currentUser = user;
   carregarFixas();
+  injectContextHelp("contas-fixas", "obContextHolder");
 });

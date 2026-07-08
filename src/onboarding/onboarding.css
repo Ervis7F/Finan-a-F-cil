@@ -1,0 +1,81 @@
+/* ============================================================
+   onboarding.css — Dashboard Checklist, Modais Contextuais e Página de Ajuda
+   Finança Fácil | src/onboarding/onboarding.css
+   ============================================================ */
+
+/* 1. Dashboard Checklist Card */
+.ob-checklist-container {
+  background: linear-gradient(135deg, var(--blue-50) 0%, #fff 100%);
+  border: 1px solid var(--blue-200);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+.ob-checklist-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+.ob-checklist-title { font-size: 1.25rem; font-weight: 800; color: var(--gray-900); }
+.ob-progress-wrap { margin-bottom: 1rem; }
+.ob-progress-text { font-size: .85rem; font-weight: 600; color: var(--blue-600); margin-bottom: .4rem; }
+.ob-progress-bg { height: 8px; background: var(--gray-200); border-radius: 4px; overflow: hidden; }
+.ob-progress-fill { height: 100%; background: var(--blue-500); border-radius: 4px; transition: width 0.4s ease; }
+
+.ob-list { list-style: none; padding: 0; display: grid; gap: .75rem; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+.ob-item { 
+  background: #fff; border: 1px solid var(--gray-200); border-radius: 8px; padding: .75rem 1rem;
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+}
+.ob-item.done { border-color: var(--green-200); background: var(--green-50); }
+.ob-item-info { display: flex; align-items: center; gap: .75rem; flex: 1; }
+.ob-icon-wrapper { width: 32px; height: 32px; border-radius: 50%; display: flex; justify-content: center; align-items: center; background: var(--gray-100); color: var(--gray-500); flex-shrink: 0; }
+.ob-item.done .ob-icon-wrapper { background: var(--green-100); color: var(--green-600); }
+.ob-item-title { font-size: .9rem; font-weight: 600; color: var(--gray-800); }
+.ob-item.done .ob-item-title { color: var(--green-700); text-decoration: line-through; }
+.ob-action-link { font-size: .8rem; font-weight: 700; color: var(--blue-600); text-decoration: none; padding: .4rem .75rem; border: 1px auto; border-radius: 6px; background: var(--blue-50); white-space: nowrap; }
+.ob-action-link:hover { background: var(--blue-100); }
+.ob-item.done .ob-action-link { display: none; }
+
+.ob-concluded-state { text-align: center; padding: 1rem 0; }
+.ob-concluded-state h3 { font-size: 1.25rem; color: var(--green-600); margin-bottom: .5rem; }
+.ob-concluded-state p { font-size: .9rem; color: var(--gray-600); margin-bottom: 1rem; }
+
+/* 2. Global Tutorial Contextual Modal */
+.ob-modal-overlay {
+  display: none; position: fixed; z-index: 9999; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(2px);
+  justify-content: center; align-items: center; padding: 1rem;
+}
+.ob-modal-overlay.open { display: flex; }
+.ob-modal-box {
+  background: #fff; width: 100%; max-width: 480px; border-radius: var(--radius-lg); padding: 2rem;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.2); position: relative; overflow-y: auto; max-height: 90vh;
+}
+.ob-modal-close { position: absolute; top: 1.2rem; right: 1.2rem; background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--gray-500); }
+.ob-modal-title { font-size: 1.5rem; font-weight: 800; color: var(--gray-900); margin-bottom: .5rem; display: flex; align-items: center; gap: .5rem; }
+.ob-modal-desc { font-size: .95rem; color: var(--gray-600); margin-bottom: 1.5rem; line-height: 1.5; }
+.ob-modal-list { list-style: none; padding: 0; margin-bottom: 1.5rem; }
+.ob-modal-list li { margin-bottom: .75rem; font-size: .9rem; color: var(--gray-800); position: relative; padding-left: 1.5rem; line-height: 1.4; }
+.ob-modal-list li::before { content: "•"; color: var(--blue-500); font-weight: bold; position: absolute; left: 0; font-size: 1.2rem; top: -3px; }
+.ob-modal-tip { background: var(--blue-50); border: 1px solid var(--blue-100); border-radius: 8px; padding: 1rem; font-size: .85rem; color: var(--blue-700); margin-bottom: 1.5rem; }
+
+/* Botão Contextual de Ajuda Floating */
+.btn-floating-help {
+  display: inline-flex; align-items: center; gap: .5rem; background: rgba(255,255,255,0.7);
+  border: 1px solid var(--gray-200); padding: .4rem .75rem; border-radius: 20px; font-size: .8rem; font-weight: 700; color: var(--gray-600); cursor: pointer; backdrop-filter: blur(4px); box-shadow: var(--shadow-sm); text-decoration: none; margin-bottom: 1.5rem; vertical-align: middle;
+}
+.btn-floating-help:hover { background: #fff; color: var(--blue-600); border-color: var(--blue-200); }
+
+/* 3. Central de Ajuda */
+.hj-search-box { display: flex; align-items: center; background: #fff; border: 1px solid var(--gray-200); border-radius: 8px; padding: 0.5rem 1rem; margin-bottom: 2rem; box-shadow: var(--shadow-sm); }
+.hj-search-box input { border: none; outline: none; flex: 1; font-size: 1rem; padding: .5rem; font-family: inherit; }
+.hj-section { margin-bottom: 2.5rem; }
+.hj-section-title { font-size: 1.2rem; font-weight: 800; color: var(--gray-900); margin-bottom: 1rem; border-bottom: 2px solid var(--gray-100); padding-bottom: .5rem; }
+.hj-card-grid { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+.hj-card { background: #fff; border: 1px solid var(--gray-200); border-radius: var(--radius-lg); padding: 1.25rem; box-shadow: var(--shadow-sm); cursor: pointer; transition: all 0.2s; }
+.hj-card:hover { border-color: var(--blue-300); background: var(--blue-50); }
+.hj-card-title { font-weight: 700; font-size: 1rem; color: var(--gray-800); margin-bottom: .4rem; }
+.hj-card-desc { font-size: .85rem; color: var(--gray-500); line-height: 1.4; }
+.hj-card-content { display: none; margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--gray-200); font-size: .9rem; color: var(--gray-700); line-height: 1.5; }
+.hj-card.open { border-color: var(--blue-400); box-shadow: 0 4px 12px rgba(59,130,246,0.1); }
+.hj-card.open .hj-card-content { display: block; }
+@media (min-width: 600px) { .hj-card-grid { grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); } }

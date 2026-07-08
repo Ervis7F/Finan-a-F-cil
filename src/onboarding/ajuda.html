@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Central de Ajuda — Finança Fácil</title>
+  <link rel="stylesheet" href="../dashboard/dashboard.css" />
+  <link rel="stylesheet" href="onboarding.css" />
+</head>
+<body>
+
+  <header class="page-header">
+    <h1 class="page-title">💡 Central de Ajuda</h1>
+    <a href="../dashboard/dashboard.html" class="btn-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline>
+      </svg>
+      Sair
+    </a>
+  </header>
+  
+  <p style="color:var(--gray-500); font-size:.9rem; margin-top:-1.5rem; margin-bottom:1.5rem;">
+    Aprenda como utilizar o Finança Fácil ao máximo com guias super rápidos.
+  </p>
+
+  <div class="hj-search-box">
+    <svg width="20" height="20" fill="none" stroke="var(--gray-400)" stroke-width="2" style="margin-right:.5rem;">
+      <circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+    </svg>
+    <input type="text" id="hjBusca" placeholder="Ex: cadastrar juros, excluir parcela..." />
+  </div>
+
+  <div id="hjPlaceholder"></div>
+
+  <script type="module" src="ajuda.js"></script>
+</body>
+</html>

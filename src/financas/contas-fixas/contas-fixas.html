@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Contas Fixas — Finança Fácil</title>
   <link rel="stylesheet" href="../contas/contas.css" />
+  <link rel="stylesheet" href="../../onboarding/onboarding.css" />
   <style>
     /* Estilos específicos localizados para os Cards de Contas Fixas */
     .fixas-grid {
@@ -57,13 +58,16 @@
 <body>
 
   <header class="page-header">
-    <h1 class="page-title">📅 Contas Fixas</h1>
-    <a href="../../dashboard/dashboard.html" class="btn-back">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline>
-      </svg>
-      Voltar
-    </a>
+    <h1 class="page-title">🔁 Contas Fixas Mensais</h1>
+    <div style="display:flex; align-items:center;">
+      <a href="../../dashboard/dashboard.html" class="btn-back" style="margin-right:1rem;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        Voltar
+      </a>
+      <div id="obContextHolder"></div>
+    </div>
   </header>
 
   <p style="color: var(--gray-500); font-size: .85rem; margin-bottom: 1.5rem; line-height: 1.4;">

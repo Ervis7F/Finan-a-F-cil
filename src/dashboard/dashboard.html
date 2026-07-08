@@ -6,6 +6,7 @@
   <title>Dashboard — Finança Fácil</title>
   <meta name="description" content="Seu painel financeiro pessoal. Acompanhe suas finanças, metas e empréstimos." />
   <link rel="stylesheet" href="dashboard.css" />
+  <link rel="stylesheet" href="../onboarding/onboarding.css" />
 </head>
 <body>
 
@@ -97,6 +98,16 @@
 
       <div class="nav-divider"></div>
 
+      <!-- Ajuda / Onboarding -->
+      <a href="../onboarding/ajuda.html" class="nav-link" id="navAjuda">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/>
+          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+          <line x1="12" y1="17" x2="12.01" y2="17"/>
+        </svg>
+        Central de Ajuda
+      </a>
+
       <!-- Sair -->
       <button class="nav-link danger" id="btnSair">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -123,8 +134,10 @@
   <main class="main-content" role="main">
     <div class="page-wrapper">
 
+      <div id="onboardingContainer"></div>
+
       <!-- Saudação dinâmica -->
-      <section class="greeting-section">
+      <section class="greeting-section" id="greetingSectionContainer">
         <h1 class="greeting-text" id="greetingText">Olá!</h1>
         <p class="greeting-sub">Bem-vindo de volta 👋</p>
         <p class="greeting-date" id="greetingDate"></p>

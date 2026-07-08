@@ -8,6 +8,7 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/f
 import { 
   collection, query, getDocs, onSnapshot, addDoc, serverTimestamp, doc, updateDoc, deleteDoc, orderBy
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { injectContextHelp } from "../../onboarding/onboarding.js";
 
 const $ = id => document.getElementById(id);
 
@@ -327,4 +328,5 @@ onAuthStateChanged(auth, (user) => {
   currentUser = user;
   initFiltros();
   loadMetas();
+  injectContextHelp("metas", "obContextHolder");
 });

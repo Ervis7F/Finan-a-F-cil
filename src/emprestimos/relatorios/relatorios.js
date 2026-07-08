@@ -8,6 +8,7 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/f
 import {
   collection, query, orderBy, getDocs
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { injectContextHelp } from "../../onboarding/onboarding.js";
 
 const $ = id => document.getElementById(id);
 const MESES = ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"];
@@ -118,4 +119,5 @@ onAuthStateChanged(auth, (user) => {
   if (!user) { window.location.replace("../../auth/login.html"); return; }
   currentUser = user;
   loadRelatorios();
+  injectContextHelp("relatorios", "obContextHolder");
 });

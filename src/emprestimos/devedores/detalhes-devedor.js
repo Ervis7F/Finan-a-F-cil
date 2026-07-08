@@ -8,6 +8,7 @@ import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/f
 import {
   collection, query, orderBy, getDocs, getDoc, doc, updateDoc, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { injectContextHelp } from "../../onboarding/onboarding.js";
 
 const $ = id => document.getElementById(id);
 const MESES = ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"];
@@ -256,4 +257,5 @@ onAuthStateChanged(auth, (user) => {
   if (!devedorId) { alert("ID do devedor não informado."); return; }
 
   loadDevedor();
+  injectContextHelp("detalhes-devedor", "obContextHolder");
 });
