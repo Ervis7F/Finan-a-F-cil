@@ -2,12 +2,19 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Regra padrão: negar todo acesso não autorizado
+    // ── Regra padrão: negar tudo ──────────────────────────────────
     match /{document=**} {
       allow read, write: if false;
     }
 
-    // Usuários só podem acessar seus próprios dados
+    // ── Coleção de usuários ──────────────────────────────────────
+    // Cada usuário só pode ler e escrever no SEU PRÓPRIO documento.
+    // A comparação request.auth.uid == userId garante o isolamento total.
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Subcoleções do usuário (finanças, empréstimos, metas, etc.)
     match /users/{userId}/{document=**} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
     }

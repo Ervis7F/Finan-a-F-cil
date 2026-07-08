@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cadastro — Finança Fácil</title>
+  <meta name="description" content="Crie sua conta no Finança Fácil e comece a controlar suas finanças pessoais." />
+  <link rel="stylesheet" href="auth.css" />
+</head>
+<body>
+  <div class="auth-card">
+
+    <!-- Logo -->
+    <div class="auth-logo">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+        </svg>
+      </div>
+      <h1>Finança Fácil</h1>
+      <p>Crie sua conta gratuita</p>
+    </div>
+
+    <!-- Alerta global -->
+    <div id="alertBox" class="alert" role="alert" aria-live="polite">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span id="alertMsg"></span>
+    </div>
+
+    <!-- Formulário de cadastro -->
+    <form id="registerForm" class="auth-form" novalidate>
+
+      <!-- Nome -->
+      <div class="form-group">
+        <label for="nome">Nome completo</label>
+        <div class="input-wrapper">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <input id="nome" type="text" class="form-input" placeholder="Seu nome completo" autocomplete="name" />
+        </div>
+        <span class="field-error" id="nomeError"></span>
+      </div>
+
+      <!-- E-mail -->
+      <div class="form-group">
+        <label for="email">E-mail</label>
+        <div class="input-wrapper">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          <input id="email" type="email" class="form-input" placeholder="seu@email.com" autocomplete="email" />
+        </div>
+        <span class="field-error" id="emailError"></span>
+      </div>
+
+      <!-- Senha -->
+      <div class="form-group">
+        <label for="senha">Senha</label>
+        <div class="input-wrapper">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <input id="senha" type="password" class="form-input" placeholder="Mínimo 6 caracteres" autocomplete="new-password" />
+          <button type="button" class="btn-toggle-password" id="toggleSenha" aria-label="Mostrar senha">
+            <svg id="eyeIconSenha" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+        <span class="field-error" id="senhaError"></span>
+      </div>
+
+      <!-- Confirmar senha -->
+      <div class="form-group">
+        <label for="confirmarSenha">Confirmar senha</label>
+        <div class="input-wrapper">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          <input id="confirmarSenha" type="password" class="form-input" placeholder="Repita a senha" autocomplete="new-password" />
+          <button type="button" class="btn-toggle-password" id="toggleConfirmar" aria-label="Mostrar confirmação de senha">
+            <svg id="eyeIconConfirmar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+        <span class="field-error" id="confirmarSenhaError"></span>
+      </div>
+
+      <!-- Botão de cadastro -->
+      <button type="submit" id="btnCadastrar" class="btn-primary">
+        <div class="spinner"></div>
+        <span class="btn-text">Criar conta</span>
+      </button>
+
+    </form>
+
+    <!-- Links -->
+    <div class="auth-links">
+      <span>Já tem uma conta? <a href="login.html">Entrar</a></span>
+    </div>
+
+  </div>
+
+  <script type="module" src="register.js"></script>
+</body>
+</html>
