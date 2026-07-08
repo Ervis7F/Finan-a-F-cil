@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Metas de Economia — Finança Fácil</title>
+  <link rel="stylesheet" href="metas.css" />
+</head>
+<body>
+
+  <header class="page-header">
+    <h1 class="page-title">🎯 Metas de Economia</h1>
+    <a href="../../dashboard/dashboard.html" class="btn-back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline>
+      </svg>
+      Voltar
+    </a>
+  </header>
+
+  <p style="color: var(--gray-500); font-size: .85rem; margin-bottom: 2rem; line-height: 1.4;">
+    Crie uma meta e o sistema calculará automaticamente o <strong>esforço mensal sugerido</strong> para você atingi-la no prazo, baseando-se na previsão da sua renda e contas fixas.
+  </p>
+
+  <!-- Criar Nova Meta -->
+  <form class="form-card" id="formMeta">
+    <h3 style="margin-bottom:1rem; font-size:1.1rem; color: #111827;">Criar Nova Meta</h3>
+    <div class="form-grid">
+      <div class="filter-group">
+        <label>O que você quer alcançar?</label>
+        <input type="text" id="metaNome" class="text-input" placeholder="Ex: Viagem final de ano" required />
+      </div>
+      <div class="filter-group">
+        <label>Valor Total (R$)</label>
+        <span class="details-label">Quanto custa a meta?</span>
+        <input type="number" id="metaValor" class="text-input" step="0.01" min="1" required />
+      </div>
+    </div>
+    <div class="form-grid">
+      <div class="filter-group">
+        <label>Mês / Ano de Início</label>
+        <div style="display:flex; gap:.5rem;">
+          <select id="metaMesIni" class="select-input" required></select>
+          <input type="number" id="metaAnoIni" class="text-input" placeholder="Ano" style="width: 100px;" required />
+        </div>
+      </div>
+      <div class="filter-group">
+        <label>Mês / Ano Final</label>
+        <div style="display:flex; gap:.5rem;">
+          <select id="metaMesFim" class="select-input" required></select>
+          <input type="number" id="metaAnoFim" class="text-input" placeholder="Ano" style="width: 100px;" required />
+        </div>
+      </div>
+    </div>
+    <button type="submit" class="btn-submit" id="btnSalvar">Criar Meta Inteligente</button>
+  </form>
+
+  <!-- Lista de Metas Ativas/Concluídas -->
+  <div id="metasGrid" class="metas-grid">
+    <div class="empty-state">Carregando suas metas...</div>
+  </div>
+
+  <script type="module" src="metas.js"></script>
+</body>
+</html>
