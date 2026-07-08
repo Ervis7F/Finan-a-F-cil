@@ -1,0 +1,69 @@
+# === Dependências ===
+node_modules/
+.npm/
+
+# === Variáveis de ambiente e segredos ===
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
+
+# === Configurações locais e sensíveis do Firebase ===
+.firebase/
+firebase-debug.log
+firebase-debug.*.log
+firebaseconfig.js
+firebaseconfig.local.js
+.firebaserc.local
+
+# === Configurações de serviço do Firebase (não comitar chaves privadas) ===
+*-service-account*.json
+serviceAccountKey.json
+
+# === Cache e builds ===
+.cache/
+dist/
+build/
+out/
+.parcel-cache/
+
+# === Logs ===
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# === Sistemas operacionais ===
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# === Editores de código ===
+.vscode/settings.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.sublime-project
+*.sublime-workspace
+
+# === Testes ===
+coverage/
+.nyc_output/
+
+# === Arquivos temporários ===
+*.tmp
+*.temp
+tmp/
+temp/
