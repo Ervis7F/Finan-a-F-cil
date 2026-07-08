@@ -58,6 +58,10 @@
 .ob-modal-list li::before { content: "•"; color: var(--blue-500); font-weight: bold; position: absolute; left: 0; font-size: 1.2rem; top: -3px; }
 .ob-modal-tip { background: var(--blue-50); border: 1px solid var(--blue-100); border-radius: 8px; padding: 1rem; font-size: .85rem; color: var(--blue-700); margin-bottom: 1.5rem; }
 
+/* SVG Global Fixer para botões de voltar e globais sem scope */
+.btn-back svg { width: 18px; height: 18px; margin-right: 0.2rem; vertical-align: middle; }
+svg { max-width: 100%; }
+
 /* Botão Contextual de Ajuda Floating */
 .btn-floating-help {
   display: inline-flex; align-items: center; gap: .5rem; background: rgba(255,255,255,0.7);

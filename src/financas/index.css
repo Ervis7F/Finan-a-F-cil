@@ -1,0 +1,82 @@
+/* ============================================================
+   index.css — Menu Resumo Finanças Pessoais
+   Finança Fácil | src/financas/index.css
+   ============================================================ */
+
+/* Reutilizando as variáveis globais que estão no dashboard ou auth, ou definindo o básico da malha */
+.page-header { margin-bottom: 2rem; }
+.page-title { font-size: 1.5rem; font-weight: 800; color: #111827; }
+.page-subtitle { color: #6b7280; font-size: 0.95rem; margin-top: 0.25rem; }
+
+.hub-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.hub-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.hub-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+  border-color: #3b82f6;
+}
+
+.hub-card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.hub-card-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.icon-contas { background: #fee2e2; color: #ef4444; }
+.icon-renda { background: #dcfce7; color: #22c55e; }
+.icon-fixas { background: #e0e7ff; color: #6366f1; }
+.icon-metas { background: #fef3c7; color: #f59e0b; }
+
+.hub-card-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 0.5rem;
+}
+
+.hub-card-desc {
+  font-size: 0.85rem;
+  color: #6b7280;
+  line-height: 1.5;
+  flex: 1;
+}
+
+.hub-card-action {
+  margin-top: 1.25rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #3b82f6;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.hub-card:hover .hub-card-action {
+  text-decoration: underline;
+}

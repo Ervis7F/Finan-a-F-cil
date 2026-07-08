@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hub de Finanças — Finança Fácil</title>
+  <link rel="stylesheet" href="../dashboard/dashboard.css" />
+  <link rel="stylesheet" href="index.css" />
+  <link rel="stylesheet" href="../onboarding/onboarding.css" />
+</head>
+<body>
+
+  <header class="page-header" style="margin: 2rem;">
+    <h1 class="page-title">💼 Finanças Pessoais</h1>
+    <p class="page-subtitle">Escolha qual divisão do seu orçamento deseja explorar, registrar ou pagar.</p>
+    
+    <div style="margin-top: 1.5rem; display:flex; align-items:center;">
+      <a href="../dashboard/dashboard.html" class="btn-back" style="margin-right:1rem;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        Voltar para Home
+      </a>
+      <!-- Podemos injetar context aqui se quiser depois, mas não é crucial no hub -->
+    </div>
+
+    <!-- Cards Hub -->
+    <div class="hub-grid">
+      
+      <!-- Contas Pendentes -->
+      <a href="contas/contas.html" class="hub-card">
+        <div class="hub-card-icon icon-contas">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
+        </div>
+        <h3 class="hub-card-title">Contas a Pagar</h3>
+        <p class="hub-card-desc">Registros mês a mês de parcelas e boletos para o seu saldo descontar.</p>
+        <span class="hub-card-action">Acessar Painel <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
+      </a>
+
+      <!-- Renda -->
+      <a href="renda/renda.html" class="hub-card">
+        <div class="hub-card-icon icon-renda">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="1" x2="12" y2="23"></line>
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+          </svg>
+        </div>
+        <h3 class="hub-card-title">Renda Mensal</h3>
+        <p class="hub-card-desc">Insira salários e freelancers para gerar seu saldo previsto total no mês.</p>
+        <span class="hub-card-action">Adicionar Renda <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
+      </a>
+
+      <!-- Contas Fixas -->
+      <a href="contas-fixas/contas-fixas.html" class="hub-card">
+        <div class="hub-card-icon icon-fixas">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+          </svg>
+        </div>
+        <h3 class="hub-card-title">Contas Fixas</h3>
+        <p class="hub-card-desc">Água, luz, plano de saúde. Registre 1x e gere como contas pendentes todos os meses com 1 clique.</p>
+        <span class="hub-card-action">Visitar Modelos <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
+      </a>
+
+      <!-- Metas -->
+      <a href="metas/metas.html" class="hub-card">
+        <div class="hub-card-icon icon-metas">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <circle cx="12" cy="12" r="6"></circle>
+            <circle cx="12" cy="12" r="2"></circle>
+          </svg>
+        </div>
+        <h3 class="hub-card-title">Metas de Economia</h3>
+        <p class="hub-card-desc">Simule caixinhas por vários meses para juntar pro carro, viagem e reservas de emergência.</p>
+        <span class="hub-card-action">Criar nova Meta <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span>
+      </a>
+
+    </div>
+  </header>
+
+</body>
+</html>
